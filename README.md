@@ -184,7 +184,7 @@ This tool wouldn't exist if the following didn't create the original Python scri
 [build link]: https://travis-ci.com/github/AriusX7/sc-extract
 [build badge]: https://img.shields.io/travis/AriusX7/sc-extract?style=for-the-badge
 [release badge]: https://img.shields.io/github/v/release/AriusX7/sc-extract?color=00A1D0&style=for-the-badge
-[release link]: https://github.com/AriusX7/sc-extract/releases/tag/v1.0.0
+[release link]: https://github.com/AriusX7/sc-extract/releases/tag/v1.0.1
 [license badge]: https://img.shields.io/badge/license-MIT-8E3FFF.svg?style=for-the-badge
 [license link]: https://github.com/AriusX7/sc-extract/blob/master/LICENSE
 [crates.io link]: https://crates.io/crates/sc_extract

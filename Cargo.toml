@@ -1,6 +1,6 @@
 [package]
 name = "sc_extract"
-version = "1.0.0"
+version = "1.0.1"
 authors = ["AriusX7 <icyligii@gmail.com>"]
 edition = "2018"
 license = "MIT"
