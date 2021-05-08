@@ -1,10 +1,11 @@
 use crate::{
     error::Error,
-    utils::{decompress, Reader},
+    utils::{self, Reader},
 };
+use byteorder::{BigEndian, ReadBytesExt};
 use colored::Colorize;
 use image::{Rgba, RgbaImage};
-use std::path::Path;
+use std::{io::Cursor, path::Path};
 
 /// Reads some data from the stream and returns appropriate pixel data.
 ///
@@ -126,18 +127,26 @@ fn adjust_pixels(img: &mut RgbaImage, pixels: Vec<[u8; 4]>, height: u32, width: 
 /// [`Error::DecompressionError`]: ./error/enum.Error.html#variant.DecompressionError
 /// [`Error::IoError`]: ./error/enum.Error.html#variant.IoError
 pub fn process_tex(
-    data: &[u8],
+    raw_data: &[u8],
     file_name: &str,
     out_dir: &Path,
     parallelize: bool,
 ) -> Result<(), Error> {
-    if data.len() < 35 {
+    if raw_data.len() < 35 {
         return Err(Error::DecompressionError(
             "Size of file is too small".to_string(),
         ));
     }
 
-    let decompressed = decompress(&data[26..])?;
+    let version = (&raw_data[2..6])
+        .read_u32::<BigEndian>()
+        .unwrap_or_default();
+    let hash_length = (&raw_data[6..10]).read_u32::<BigEndian>().unwrap_or(16) as usize;
+
+    let decompressed = match version {
+        0 | 1 | 3 => utils::decompress(&raw_data[10 + hash_length..])?,
+        _ => Cursor::new(raw_data.to_vec()),
+    };
 
     let mut reader = Reader::new(decompressed);
 

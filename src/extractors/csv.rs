@@ -1,4 +1,4 @@
-use crate::{error::Error, utils::decompress};
+use crate::{error::Error, utils};
 use colored::Colorize;
 use std::{fs, path::Path};
 
@@ -16,7 +16,7 @@ use std::{fs, path::Path};
 /// [`Error::DecompressionError`]: ./error/enum.Error.html#variant.DecompressionError
 /// [`Error::IoError`]: ./error/enum.Error.html#variant.IoError
 pub fn process_csv(data: &[u8], file_name: &str, out_dir: &Path) -> Result<(), Error> {
-    let decompressed = match decompress(data) {
+    let decompressed = match utils::decompress(data) {
         Ok(c) => c,
         Err(e) => return Err(e),
     };
