@@ -44,7 +44,7 @@ jobs:
                       os: ubuntu-18.04
                       rust: nightly
 
-                      - build: macos
+                    - build: macos
                       os: macos-latest
                       rust: nightly
 
