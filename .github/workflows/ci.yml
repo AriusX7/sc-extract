@@ -94,10 +94,10 @@ jobs:
                   echo "cargo command is: ${{ env.CARGO }}"
                   echo "target flag is: ${{ env.TARGET_FLAGS }}"
             - name: Build sc_extract
-              run: ${{ env.CARGO }} build --verbose --all ${{ env.TARGET_FLAGS }}
+              run: ${{ env.CARGO }} build --all ${{ env.TARGET_FLAGS }}
 
             - name: Run tests
-              run: ${{ env.CARGO }} test --verbose --all ${{ env.TARGET_FLAGS }}
+              run: ${{ env.CARGO }} test --all ${{ env.TARGET_FLAGS }}
 
     rustfmt:
         name: rustfmt
