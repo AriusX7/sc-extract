@@ -75,7 +75,7 @@ jobs:
                       rust: nightly
                       target: arm-unknown-linux-gnueabi
 
-                    - build: aarch
+                    - build: nightly-aarch
                       os: ubuntu-18.04
                       rust: nightly
                       target: aarch64-unknown-linux-gnu
