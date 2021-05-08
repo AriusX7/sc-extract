@@ -159,7 +159,6 @@ jobs:
             - name: Build archive
               shell: bash
               run: |
-                  outdir="$(ci/cargo-out-dir "${{ env.TARGET_DIR }}")"
                   staging="sce-${{ env.RELEASE_VERSION }}-${{ matrix.target }}"
 
                   cp {README.md,LICENSE} "$staging/"
