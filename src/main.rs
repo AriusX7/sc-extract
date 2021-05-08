@@ -269,14 +269,24 @@ fn main() {
             entries.into_par_iter().for_each(|entry| {
                 let file_path = entry.unwrap().path();
                 if process_file(&file_path, &out_dir, true, &opts).is_ok() {
-                    found_one.compare_and_swap(false, true, Ordering::AcqRel);
+                    let _ = found_one.compare_exchange_weak(
+                        false,
+                        true,
+                        Ordering::AcqRel,
+                        Ordering::Acquire,
+                    );
                 }
             })
         } else {
             for entry in entries {
                 let file_path = entry.unwrap().path();
                 if process_file(&file_path, &out_dir, false, &opts).is_ok() {
-                    found_one.compare_and_swap(false, true, Ordering::AcqRel);
+                    let _ = found_one.compare_exchange_weak(
+                        false,
+                        true,
+                        Ordering::AcqRel,
+                        Ordering::Acquire,
+                    );
                 }
             }
         }

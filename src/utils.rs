@@ -1,5 +1,6 @@
 use super::error::Error;
 use byteorder::{LittleEndian, ReadBytesExt};
+#[cfg(any(target_os = "macos", target_os = "linux"))]
 use lzham::decompress::{decompress_with_options, DecompressionOptions};
 use lzma_rs::lzma_decompress;
 use std::io::{Cursor, Read};
@@ -127,22 +128,44 @@ pub(crate) fn decompress(raw_data: &[u8]) -> Result<Cursor<Vec<u8>>, Error> {
     let mut decomp: Vec<u8> = Vec::new();
 
     if raw_data[..4] == [83, 67, 76, 90] {
-        // We need to do LZHAM decompression.
-        let dict_size = (&raw_data[4..5]).read_u8().unwrap_or(0);
-        let uncompressed_size = (&raw_data[5..9]).read_u32::<LittleEndian>().unwrap_or(0) as usize;
-
-        let mut options = DecompressionOptions::default();
-        options.dict_size_log2 = dict_size as u32;
-
-        let status =
-            decompress_with_options(&mut &raw_data[9..], &mut decomp, uncompressed_size, options);
-        if !status.is_success() {
+        #[cfg(not(any(target_os = "macos", target_os = "linux")))]
+        {
             return Err(Error::DecompressionError(
-                "Failed to decompress file".to_string(),
+                "`lzham` compression is not supported for your operating system yet".to_string(),
             ));
         }
 
-        Ok(Cursor::new(decomp))
+        #[cfg(any(target_os = "macos", target_os = "linux"))]
+        {
+            // We need to do LZHAM decompression.
+            let dict_size = (&raw_data[4..5]).read_u8().unwrap_or(0);
+            let uncompressed_size =
+                (&raw_data[5..9]).read_u32::<LittleEndian>().unwrap_or(0) as usize;
+
+            let mut options = DecompressionOptions::default();
+            options.dict_size_log2 = dict_size as u32;
+
+            let status = decompress_with_options(
+                &mut &raw_data[9..],
+                &mut decomp,
+                uncompressed_size,
+                options,
+            );
+            if !status.is_success() {
+                return Err(Error::DecompressionError(
+                    "Failed to decompress file".to_string(),
+                ));
+            }
+
+            Ok(Cursor::new(decomp))
+        }
+    } else if raw_data[..4] == [40, 181, 47, 253] {
+        match zstd::stream::copy_decode(raw_data, &mut decomp) {
+            Ok(_) => Ok(Cursor::new(decomp)),
+            Err(_) => Err(Error::DecompressionError(
+                "Failed to decompress file".to_string(),
+            )),
+        }
     } else {
         let data = [&raw_data[0..9], &[b'\x00'; 4], &raw_data[9..]].concat();
 

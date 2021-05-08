@@ -4,8 +4,9 @@ use conv::ValueInto;
 use image::{imageops, GenericImage, GenericImageView, GrayImage, ImageBuffer, Pixel, RgbaImage};
 use imageproc::{
     definitions::{Clamp, Image},
-    drawing::{draw_convex_polygon_mut, Point as Point2D},
+    drawing::draw_polygon_mut,
     geometric_transformations::{warp_into, Interpolation, Projection},
+    point::Point as Point2D,
 };
 use rayon::prelude::*;
 use std::{
@@ -526,7 +527,7 @@ fn write_shape(
                 let sheet_id = sprite_data[x].regions[y].sheet_id as usize;
 
                 let mut im_mask = GrayImage::new(sheet_data[sheet_id].x, sheet_data[sheet_id].y);
-                draw_convex_polygon_mut(&mut im_mask, polygon.as_slice(), image::Luma([255]));
+                draw_polygon_mut(&mut im_mask, polygon.as_slice(), image::Luma([255]));
 
                 let bounds = get_bbox(&im_mask);
 
