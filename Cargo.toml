@@ -29,4 +29,4 @@ hex = "0.4.2"
 zstd = "0.8.0"
 
 [target.'cfg(any(target_os = "macos", target_os = "linux"))'.dependencies]
-lzham = "0.1.0"
+lzham = "0.1.1"
