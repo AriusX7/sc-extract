@@ -11,7 +11,7 @@ use structopt::StructOpt;
 
 /// A very fast tool to extract graphics and data from Supercell's game files.
 ///
-/// sc_extract supports extraction of the following files: `_tex.sc`, extracted `.sc` and `.csv`.
+/// sce supports extraction of the following files: `_tex.sc`, extracted `.sc` and `.csv`.
 #[derive(StructOpt)]
 #[structopt(name = "sce")]
 struct Options {

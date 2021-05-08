@@ -6,39 +6,39 @@
 
 This tool is simply intended to get high quality graphics and data from the files. It is in no way an attempt to:
 
-- modify the game in any way
-- create a clone or any other game based on any of Supercell's games
-- make profit
+* modify the game in any way
+* create a clone or any other game based on any of Supercell's games
+* make profit
 
 ## Features
 
 Some of sc_extract's features include:
 
-- very fast speed (upto 10 times faster than Python tools)
-- precompiled binaries for multiple operating systems (Linux, macOS, Windows)
-- multiple file formats support
-- very extensive command line support
+* very fast speed (upto 10 times faster than Python tools)
+* precompiled binaries for multiple operating systems (Linux, macOS, Windows)
+* multiple file formats support
+* very extensive command line support
 
 sc_extract can extract/process the following files found in Supercell's games:
 
-- `_tex.sc`
-- `.csv`
-- `.sc` files extracted from QuickBMS
+* `_tex.sc`
+* `.csv`
+* `.sc` files extracted from QuickBMS
 
-sc_extract is a standalone tool but provides a simple Rust crate with a clean API allowing developers to implement their own tools with minimal work.
+sc_extract is a standalone tool (binary name `sce` ) but provides a simple Rust crate with a clean API allowing developers to implement their own tools with minimal work.
 
 ## About The Tool
 
 This tool is a Rust implementation of these scripts:
 
-- [cr-sc-dump]: tex_sc and csv extraction
-- [sc_decode]: extraction of individual images from tex_sc sprites
+* [cr-sc-dump]: tex_sc and csv extraction
+* [sc_decode]: extraction of individual images from tex_sc sprites
 
 The Python implementations take a long time to extract images from huge files. sc_extract can extract data very quickly. Some comparisons are as below:
 
-- To extract all `_tex.sc` sprites from Brawl Stars' version `27.269`, sc_extract takes **less than 20 seconds** whereas cr-sc-dump takes **over 4 minutes**
+* To extract all `_tex.sc` sprites from Brawl Stars' version `27.269`, sc_extract takes **less than 20 seconds** whereas cr-sc-dump takes **over 4 minutes**
 
-- To extract all individual images from `ui` file of Brawl Stars' version `27.269`, sc_extract takes **about 2.5 minutes** whereas sc_decode takes **over 10 minutes**.
+* To extract all individual images from `ui` file of Brawl Stars' version `27.269`, sc_extract takes **about 2.5 minutes** whereas sc_decode takes **over 10 minutes**.
 
 **Note:** The times were tested on a MacBook Air with 1.8 GHz Dual-Core Intel Core i5 processor and 8 GB of RAM. They may wary on your machine.
 
@@ -54,11 +54,11 @@ You can find precompiled binaries for multiple operating systems and architectur
 
 Download the binary which is appropriate for your machine. After downloading, unzip the folder. You should see the following three files inside:
 
-- `sc_extract` (or `sc_extract.exe` on Windows)
-- `README.md`
-- `LICENSE`
+* `sce` (or `sce.exe` on Windows)
+* `README.md`
+* `LICENSE`
 
-Now, `cd` into this directory and follow steps described [here](#usage) to use it!
+Now,  `cd` into this directory and follow steps described [here](#usage) to use it!
 
 ### Using `cargo install`
 
@@ -70,29 +70,29 @@ It will also add this tool to the shell path automatically, allowing you to use 
 
 You can download this tool's [source code] and build it yourself by using `cargo build --release` command. You need to `cd` into this tool's directory before executing that command. Do not forgot the `--release` flag or your tool will work very slowly.
 
-**Note:** In the below example commands, it will be assumed that you have installed the tool using first or second method. If you installed from the source, you will have to replace `sc_extract` with `cargo run --release` in all commands.
+**Note:** In the below example commands, it will be assumed that you have installed the tool using first or second method. If you installed from the source, you will have to replace `sce` with `cargo run --release` in all commands. The binary name of previous versions of `sc_extract` was `sc_extract` , so if you have an old version, you'd have to use `sc_extract` as the name.
 
 ## Usage
 
-**Note 1:** You may need to replace `sc_extract` by `./sc_extract`, `sc_extract.exe` or `cargo run --release` in the commands below.
+**Note 1:** You may need to replace `sce` by `./sce` ,  `sce.exe` ,  `sc_extract` or `cargo run --release` in the commands below.
 
-**Note 2:** Extracted `sc` will be used to denote `.sc` files extracted using QuickBMS in the following section(s). Extracted `sc` files have no extension, they appear as `ui`, `loading`, etc.
+**Note 2:** Extracted `sc` will be used to denote `.sc` files extracted using QuickBMS in the following section(s). Extracted `sc` files have no extension, they appear as `ui` ,  `loading` , etc.
 
-You will need the `_tex.sc`, extracted `sc` or `.csv` files of the Supercell game you wish to extract. You can get the files by downloading the APK of the game, changing the extension to `.zip`, unzipping it and navigating to `/assets/sc` (_tex.sc files), `/assets/csv_logic` (csv files) or `csv_client` (csv files) folder inside the unzipped folder. To get extracted `sc` files, see [this section](#using-quickbms-to-extract-sc-files).
+You will need the `_tex.sc` , extracted `sc` or `.csv` files of the Supercell game you wish to extract. You can get the files by downloading the APK of the game, changing the extension to `.zip` , unzipping it and navigating to `/assets/sc` (_tex.sc files),  `/assets/csv_logic` (csv files) or `csv_client` (csv files) folder inside the unzipped folder. To get extracted `sc` files, see [this section](#using-quickbms-to-extract-sc-files).
 
-After installing this tool, `cd` into the directory with the tool (not required if you add it to your path or use the second method).
+After installing this tool,  `cd` into the directory with the tool (not required if you add it to your path or use the second method).
 
-```sh
-cd path_to_sc_extract
+``` sh
+cd path_to_sce
 ```
 
 Then, simply use the following command to extract the required files!
 
-```sh
-sc_extract [FLAGS] [OPTIONS] [path]
+``` sh
+sce [FLAGS] [OPTIONS] [path]
 ```
 
-`path` must be a valid path pointing to a single `_tex.sc`, extracted `sc` or `.csv` file or a directory containing those files. See [Flags and Options](#flags-and-options) section to know more about them.
+`path` must be a valid path pointing to a single `_tex.sc` , extracted `sc` or `.csv` file or a directory containing those files. See [Flags and Options](#flags-and-options) section to know more about them.
 
 If `path` is not given, the current directory is used as the path.
 
@@ -112,26 +112,26 @@ The following optional flags and options can be specified to control the extract
 
 |     Options      |     Short     |                                                                                                                                         Description                                                                                                                                         |                              out_path                               |
 |:----------------:|:-------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------:|
-| --out <out-path> | -o <out-path> |                                                                                            Specifies the output directory. If not specified, a directory named `extracts` is created in `path`.                                                                                             |            `out-path` must be a valid path-like string.             |
-| --png <png-dir>  | -P <png-dir>  | The path to directory where a `_tex.sc` file's extracted images are stored. It is required for cutting images using extracted `.sc` files. If the path is not specified, sc_extract will look for the png files in the directory where the source (extracted `sc`) file(s) is/are present. |             `png-dir` must be a valid path-like string.             |
+| --out <out-path> | -o <out-path> |                                                                                            Specifies the output directory. If not specified, a directory named `extracts` is created in `path` .                                                                                             | `out-path` must be a valid path-like string.             |
+| --png <png-dir>  | -P <png-dir>  | The path to directory where a `_tex.sc` file's extracted images are stored. It is required for cutting images using extracted `.sc` files. If the path is not specified, sc_extract will look for the png files in the directory where the source (extracted `sc` ) file(s) is/are present. | `png-dir` must be a valid path-like string.             |
 |  --type <kind>   |   -t <kind>   |                                                                                                   Specifies the type of files you want to extract. By default, all types are considered.                                                                                                    | `kind` can be one of "csv", "sc" and "tex" (without double quotes). |
 
 **Example Commands:**
 
-```sh
-sc_extract ./sc -F
+``` sh
+sce ./sc -F
 ```
 
 The above command uses `./sc` as the source directory. It goes over all files in the directory one-by-one and extracts all valid files. The output is saved in `./sc/extracts` directory. It does not ignore files like `quickbms` and `.DS_Store` because of the `-F` flag.
 
-```sh
-sc_extract --delete -p ./sc --out ./extracts
+``` sh
+sce --delete -p ./sc --out ./extracts
 ```
 
-The above command uses `./sc` as the source directory. It goes over all files in the directory parallelly and extracts all valid files. The output is saved in `./extracts` directory. `png` flag is not supplied, so it looks for sprites extracted from `_tex.sc` in `./sc`. It will fail to cut images from extracted `sc` files if `./sc` directory will not contain the sprites. The rest of extraction will not be affected. After extracting, all valid `_tex.sc` and `.csv` and extracted `sc` (with png images) files are deleted.
+The above command uses `./sc` as the source directory. It goes over all files in the directory parallelly and extracts all valid files. The output is saved in `./extracts` directory. `png` flag is not supplied, so it looks for sprites extracted from `_tex.sc` in `./sc` . It will fail to cut images from extracted `sc` files if `./sc` directory will not contain the sprites. The rest of extraction will not be affected. After extracting, all valid `_tex.sc` and `.csv` and extracted `sc` (with png images) files are deleted.
 
-```sh
-sc_extract -p ./sc --out ./sc_out -t sc --png ./sc/extracts
+``` sh
+sce -p ./sc --out ./sc_out -t sc --png ./sc/extracts
 ```
 
 The above command uses `./sc` as the source directory. It goes over all files in the directory parallelly and cuts images using all valid extracted `sc` files. The output is saved in `./sc_out` directory. The png files used for extraction as searched for in `./sc/extracts` directory.
@@ -140,9 +140,9 @@ The above command uses `./sc` as the source directory. It goes over all files in
 
 [QuickBMS] is required to extract `.sc` files. You will also need [clash_royale.bms]. QuickBMS can be downloaded for macOS [here][quickbms macos].
 
-Copy QuickBMS and clash_royale.bms into the directory with `.sc` files (not `_tex.sc`) and then run this command:
+Copy QuickBMS and clash_royale.bms into the directory with `.sc` files (not `_tex.sc` ) and then run this command:
 
-```sh
+``` sh
 find . -not -name '*_tex.sc' -name '*.sc' -exec ./quickbms ./clash_royale.bms {} \;
 ```
 
@@ -154,7 +154,7 @@ Running the command will create a new file for each `.sc` file in the folder. Th
 
 If you used a pre-compiled binary, you'll simply have to download a new binary for the newer version from the [Releases][releases] page.
 
-If you installed the tool using `cargo install`, you can update the tool by simply reusing the `cargo install sc_extract` command. If it fails to update the tool, you can force it by adding the `--force` flag, like so: `cargo install sc_extract --force`.
+If you installed the tool using `cargo install` , you can update the tool by simply reusing the `cargo install sc_extract` command. If it fails to update the tool, you can force it by adding the `--force` flag, like so: `cargo install sc_extract --force` .
 
 If you installed using the source code, you will have to repeat the process described in [Building From Source](#building-from-source) section using the new source code.
 
@@ -166,10 +166,10 @@ sc_extract is available under the `MIT` license. See [LICENSE](LICENSE) for more
 
 This tool wouldn't exist if the following didn't create the original Python scripts.
 
-- [athlan20]
-- [clanner]
-- [Galaxy1036]
-- [umop-aplsdn]
+* [athlan20]
+* [clanner]
+* [Galaxy1036]
+* [umop-aplsdn]
 
 [cr-sc-dump]: https://github.com/123456abcdef/cr-sc-dump
 [sc_decode]: https://github.com/Galaxy1036/sc_decode
@@ -186,7 +186,7 @@ This tool wouldn't exist if the following didn't create the original Python scri
 [build link]: https://travis-ci.com/github/AriusX7/sc-extract
 [build badge]: https://img.shields.io/travis/AriusX7/sc-extract?style=for-the-badge
 [release badge]: https://img.shields.io/github/v/release/AriusX7/sc-extract?color=00A1D0&style=for-the-badge
-[release link]: https://github.com/AriusX7/sc-extract/releases/tag/v1.0.2
+[release link]: https://github.com/AriusX7/sc-extract/releases/tag/v1.1.0
 [license badge]: https://img.shields.io/badge/license-MIT-8E3FFF.svg?style=for-the-badge
 [license link]: https://github.com/AriusX7/sc-extract/blob/master/LICENSE
 [crates.io link]: https://crates.io/crates/sc_extract

@@ -1,6 +1,6 @@
 [package]
 name = "sc_extract"
-version = "1.0.2"
+version = "1.1.0"
 authors = ["AriusX7 <icyligii@gmail.com>"]
 edition = "2018"
 license = "MIT"
@@ -13,6 +13,10 @@ categories = ["command-line-utilities"]
 exclude = [
     "tests/*"
 ]
+
+[[bin]]
+name = "sce"
+path = "src/main.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
