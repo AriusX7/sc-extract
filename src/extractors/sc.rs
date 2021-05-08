@@ -110,11 +110,7 @@ enum Rotation {
 
 impl Rotation {
     fn is_same(&self) -> bool {
-        if let Self::Same = *self {
-            true
-        } else {
-            false
-        }
+        matches!(*self, Self::Same)
     }
 }
 

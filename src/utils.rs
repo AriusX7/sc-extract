@@ -142,8 +142,10 @@ pub(crate) fn decompress(raw_data: &[u8]) -> Result<Cursor<Vec<u8>>, Error> {
             let uncompressed_size =
                 (&raw_data[5..9]).read_u32::<LittleEndian>().unwrap_or(0) as usize;
 
-            let mut options = DecompressionOptions::default();
-            options.dict_size_log2 = dict_size as u32;
+            let options = DecompressionOptions {
+                dict_size_log2: dict_size as u32,
+                ..Default::default()
+            };
 
             let status = decompress_with_options(
                 &mut &raw_data[9..],

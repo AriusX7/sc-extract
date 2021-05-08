@@ -3,7 +3,7 @@ use rayon::prelude::*;
 use sc_extract::{process_csv, process_sc, process_tex};
 use std::{
     fs,
-    path::PathBuf,
+    path::{Path, PathBuf},
     str::FromStr,
     sync::atomic::{AtomicBool, Ordering},
 };
@@ -83,7 +83,7 @@ impl FromStr for FileType {
 }
 
 /// Deletes the file with given path. It deletion fails, prints it on stdout.
-fn delete_file(path: &PathBuf) {
+fn delete_file(path: &Path) {
     match fs::remove_file(&path) {
         Ok(_) => (),
         Err(_) => println!(
@@ -100,7 +100,7 @@ fn delete_file(path: &PathBuf) {
 /// `None` is returned.
 ///
 /// The data passed here must be compressed/raw.
-fn get_file_type(data: &[u8], path: &PathBuf, filter: bool) -> Option<FileType> {
+fn get_file_type(data: &[u8], path: &Path, filter: bool) -> Option<FileType> {
     // Some common mistakenly used file types are filtered here.
     let path_str = path.file_name().unwrap().to_str().unwrap();
 
@@ -130,12 +130,7 @@ fn get_file_type(data: &[u8], path: &PathBuf, filter: bool) -> Option<FileType> 
 /// ## Panic
 ///
 /// The process may panic in case of lack of permissions to read/write files.
-fn process_file(
-    path: &PathBuf,
-    out_dir: &PathBuf,
-    parallelize: bool,
-    opts: &Options,
-) -> Result<(), ()> {
+fn process_file(path: &Path, out_dir: &Path, parallelize: bool, opts: &Options) -> Result<(), ()> {
     let data = match fs::read(&path) {
         Ok(d) => d,
         Err(_) => return Err(()),
@@ -201,13 +196,11 @@ fn main() {
 
     let path = if let Some(ref p) = opts.path {
         p.clone()
+    } else if let Ok(p) = std::env::current_dir() {
+        p
     } else {
-        if let Ok(p) = std::env::current_dir() {
-            p
-        } else {
-            println!("{}", "Expected to access the current directory.".red());
-            std::process::exit(1);
-        }
+        println!("{}", "Expected to access the current directory.".red());
+        std::process::exit(1);
     };
 
     let out_dir = match &opts.out_dir {
@@ -222,13 +215,11 @@ fn main() {
                     println!("{}", "Expected path to have a parent.".red());
                     std::process::exit(1);
                 }
+            } else if let Ok(p) = std::env::current_dir() {
+                p.join("extracts")
             } else {
-                if let Ok(p) = std::env::current_dir() {
-                    p.join("extracts")
-                } else {
-                    println!("{}", "Expected to access the current directory.".red());
-                    std::process::exit(1);
-                }
+                println!("{}", "Expected to access the current directory.".red());
+                std::process::exit(1);
             }
         }
     };
