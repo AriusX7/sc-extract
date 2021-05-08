@@ -94,6 +94,8 @@ jobs:
         steps:
             - name: Checkout repository
               uses: actions/checkout@v2
+              with:
+                  submodules: recursive
 
             - name: Set up cache
               uses: Swatinem/rust-cache@v1
@@ -107,6 +109,18 @@ jobs:
                   toolchain: ${{ matrix.rust }}
                   profile: minimal
                   override: true
+
+              # this is based on zstd's ci build files
+            - name: Add mingw32 to path for i686-gnu
+              run: |
+                  echo "C:\msys64\mingw32\bin" >> $GITHUB_PATH
+              if: matrix.target == 'i686-pc-windows-gnu'
+              shell: bash
+
+            - name: Add mingw64 to path for x86_64-gnu
+              run: echo "C:\msys64\mingw64\bin" >> $GITHUB_PATH
+              if: matrix.target == 'x86_64-pc-windows-gnu'
+              shell: bash
 
             - name: Use Cross
               if: matrix.target != ''
