@@ -71,55 +71,12 @@ jobs:
             RUST_BACKTRACE: 1
         strategy:
             matrix:
-                build:
-                    [
-                        linux,
-                        linux-musl,
-                        linux-32-gnu,
-                        linux-32-musl,
-                        linux-arm,
-                        linux-mips,
-                        linux-aarch,
-                        macos,
-                        win-msvc,
-                        win-gnu,
-                        win32-msvc,
-                    ]
+                build: [linux, macos, win-msvc, win-gnu]
                 include:
                     - build: linux
                       os: ubuntu-18.04
                       rust: nightly
                       target: x86_64-unknown-linux-gnu
-
-                    - build: linux-musl
-                      os: ubuntu-18.04
-                      rust: nightly
-                      target: x86_64-unknown-linux-musl
-
-                    - build: linux-32-gnu
-                      os: ubuntu-18.04
-                      rust: nightly
-                      target: i686-unknown-linux-gnu
-
-                    - build: linux-32-musl
-                      os: ubuntu-18.04
-                      rust: nightly
-                      target: i686-unknown-linux-musl
-
-                    - build: linux-arm
-                      os: ubuntu-18.04
-                      rust: nightly
-                      target: arm-unknown-linux-gnueabihf
-
-                    - build: linux-mips
-                      os: ubuntu-18.04
-                      rust: nightly
-                      target: mips64-unknown-linux-gnuabi64
-
-                    - build: linux-aarch
-                      os: ubuntu-18.04
-                      rust: nightly
-                      target: aarch64-unknown-linux-gnu
 
                     - build: macos
                       os: macos-latest
@@ -135,11 +92,6 @@ jobs:
                       os: windows-2019
                       rust: nightly-x86_64-gnu
                       target: x86_64-pc-windows-gnu
-
-                    - build: win32-msvc
-                      os: windows-2019
-                      rust: nightly
-                      target: i686-pc-windows-msvc
 
         steps:
             - name: Checkout repository
@@ -203,14 +155,6 @@ jobs:
               if: matrix.build == 'linux' || matrix.build == 'macos'
               run: strip "target/${{ matrix.target }}/release/sce"
 
-            - name: Strip release binary (arm)
-              if: matrix.build == 'linux-arm'
-              run: |
-                  docker run --rm -v \
-                    "$PWD/target:/target:Z" \
-                    rustembedded/cross:arm-unknown-linux-gnueabihf \
-                    arm-linux-gnueabihf-strip \
-                    /target/arm-unknown-linux-gnueabihf/release/sce
             - name: Build archive
               shell: bash
               run: |
