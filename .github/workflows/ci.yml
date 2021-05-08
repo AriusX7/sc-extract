@@ -6,7 +6,6 @@ on:
     pull_request:
     push:
         branches:
-            - master
 jobs:
     test:
         name: test
@@ -95,6 +94,9 @@ jobs:
         steps:
             - name: Checkout repository
               uses: actions/checkout@v2
+
+            - name: Set up cache
+              uses: Swatinem/rust-cache@v1
 
             - name: Setup cmake
               uses: lukka/get-cmake@latest
