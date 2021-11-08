@@ -6,14 +6,14 @@ use lzma_rs::lzma_decompress;
 use std::io::{Cursor, Read};
 
 /// Wrapper for reading data from stream.
-pub(crate) struct Reader {
-    stream: Cursor<Vec<u8>>,
+pub(crate) struct Reader<'a> {
+    stream: Cursor<&'a [u8]>,
     bytes_left: usize,
 }
 
-impl Reader {
+impl<'a> Reader<'a> {
     /// Create new `Reader` instance from a stream.
-    pub fn new(stream: Cursor<Vec<u8>>) -> Self {
+    pub fn new(stream: Cursor<&'a [u8]>) -> Self {
         let bytes_left = stream.get_ref().len();
 
         Self { stream, bytes_left }
@@ -124,8 +124,8 @@ impl Reader {
 /// [`Error::DecompressionError`] is returned.
 ///
 /// [`Error::DecompressionError`]: ./error/enum.Error.html#variant.DecompressionError
-pub(crate) fn decompress(raw_data: &[u8]) -> Result<Cursor<Vec<u8>>, Error> {
-    let mut decomp: Vec<u8> = Vec::new();
+pub(crate) fn decompress(raw_data: &[u8], output: &mut Vec<u8>) -> Result<(), Error> {
+    // let mut buf: Vec<u8> = Vec::new();
 
     if raw_data[..4] == [83, 67, 76, 90] {
         #[cfg(not(any(target_os = "macos", target_os = "linux")))]
@@ -147,35 +147,30 @@ pub(crate) fn decompress(raw_data: &[u8]) -> Result<Cursor<Vec<u8>>, Error> {
                 ..Default::default()
             };
 
-            let status = decompress_with_options(
-                &mut &raw_data[9..],
-                &mut decomp,
-                uncompressed_size,
-                options,
-            );
+            let status =
+                decompress_with_options(&mut &raw_data[9..], output, uncompressed_size, options);
             if !status.is_success() {
                 return Err(Error::DecompressionError(
                     "Failed to decompress file".to_string(),
                 ));
             }
-
-            Ok(Cursor::new(decomp))
         }
     } else if raw_data[..4] == [40, 181, 47, 253] {
-        match zstd::stream::copy_decode(raw_data, &mut decomp) {
-            Ok(_) => Ok(Cursor::new(decomp)),
-            Err(_) => Err(Error::DecompressionError(
+        if let Err(_) = zstd::stream::copy_decode(raw_data, output) {
+            return Err(Error::DecompressionError(
                 "Failed to decompress file".to_string(),
-            )),
+            ));
         }
     } else {
         let data = [&raw_data[0..9], &[b'\x00'; 4], &raw_data[9..]].concat();
 
-        match lzma_decompress(&mut data.as_slice(), &mut decomp) {
-            Ok(_) => Ok(Cursor::new(decomp)),
-            Err(_) => Err(Error::DecompressionError(
-                "Failed to decompress file".to_string(),
-            )),
+        if let Err(e) = lzma_decompress(&mut data.as_slice(), output) {
+            return Err(Error::DecompressionError(format!(
+                "Failed to decompress file: {}",
+                e
+            )));
         }
     }
+
+    Ok(())
 }

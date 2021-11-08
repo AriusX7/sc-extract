@@ -151,7 +151,7 @@ pub fn process_sc(
         println!("\nProcessing `{}` image(s)...", file_name.green().bold());
     }
 
-    let mut stream = Reader::new(Cursor::new(data.to_vec()));
+    let mut stream = Reader::new(Cursor::new(data));
     let mut offset_shape = 0;
     let mut offset_sheet = 0;
 
