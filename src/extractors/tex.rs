@@ -141,14 +141,20 @@ pub fn process_tex(
     let version = (&raw_data[2..6])
         .read_u32::<BigEndian>()
         .unwrap_or_default();
-    let hash_length = (&raw_data[6..10]).read_u32::<BigEndian>().unwrap_or(16) as usize;
 
-    let decompressed = match version {
-        0 | 1 | 3 => utils::decompress(&raw_data[10 + hash_length..])?,
-        _ => Cursor::new(raw_data.to_vec()),
+    let (start, end) = if version == 4 { (10, 14) } else { (6, 10) };
+
+    let hash_length = (&raw_data[start..end])
+        .read_u32::<BigEndian>()
+        .unwrap_or(16) as usize;
+
+    let mut output = Vec::new();
+    match version {
+        0 | 1 | 3 | 4 => utils::decompress(&raw_data[end + hash_length..], &mut output)?,
+        _ => output = raw_data.to_vec(),
     };
 
-    let mut reader = Reader::new(decompressed);
+    let mut reader = Reader::new(Cursor::new(&output));
 
     let mut pic_count = 0;
     let possible_types = [1, 24, 27, 28];

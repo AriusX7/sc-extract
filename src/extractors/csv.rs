@@ -16,14 +16,16 @@ use std::{fs, path::Path};
 /// [`Error::DecompressionError`]: ./error/enum.Error.html#variant.DecompressionError
 /// [`Error::IoError`]: ./error/enum.Error.html#variant.IoError
 pub fn process_csv(data: &[u8], file_name: &str, out_dir: &Path) -> Result<(), Error> {
-    let decompressed = match utils::decompress(data) {
+    let mut output = Vec::new();
+
+    match utils::decompress(data, &mut output) {
         Ok(c) => c,
         Err(e) => return Err(e),
     };
 
     println!("\nExtracting {} file...", file_name.green().bold());
 
-    fs::write(out_dir.join(file_name), decompressed.get_ref())?;
+    fs::write(out_dir.join(file_name), output)?;
 
     Ok(())
 }
